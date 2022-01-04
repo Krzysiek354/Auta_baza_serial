@@ -1,0 +1,462 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Reflection;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+
+namespace test
+{
+    [Serializable]
+    class auto
+    {
+        private int moc;
+        private int przebieg;
+        private int rocznik;
+        private int cena;
+        public auto()
+        {
+            moc = 0;
+            przebieg = 0;
+            rocznik = 0;
+            cena = 0;
+        }
+
+        public int parametr_moc
+        {
+            get { return moc; }
+            set { moc = value; }
+        }
+
+        public int parametr_przebieg
+        {
+            get { return przebieg; }
+            set { przebieg = value; }
+        }
+        public int parametr_rocznik
+        {
+            get { return rocznik; }
+            set { rocznik = value; }
+        }
+
+        public int parametr_cena
+        {
+            get { return cena; }
+            set { cena = value; }
+        }
+
+    }
+    [Serializable]
+    class suw : auto
+    {
+        private string nazwa;
+
+        public suw()
+        {
+            nazwa = "";
+        }
+        public string suw_nazwa
+        {
+            get { return nazwa; }
+            set { nazwa = value; }
+        }
+
+    }
+    [Serializable]
+    class kombi : auto
+    {
+        private string nazwa;
+
+        public kombi()
+        {
+            nazwa = "";
+        }
+        public string kombi_nazwa
+        {
+            get { return nazwa; }
+            set { nazwa = value; }
+        }
+    }
+    [Serializable]
+    class sedan : auto
+    {
+        private string nazwa;
+
+        public sedan()
+        {
+            nazwa = "";
+        }
+        public string sedan_nazwa
+        {
+            get { return nazwa; }
+            set { nazwa = value; }
+        }
+    }
+    [Serializable]
+    class root : Exception
+    {
+        static string wybor;
+        static string zmienna;
+        static int zmienna1;
+        static char koniec;
+        static ArrayList baza = new ArrayList();
+        static ArrayList baza1 = new ArrayList();
+        static ArrayList baza2 = new ArrayList();
+        public static int Main()
+        {
+            try
+            {
+                if (File.Exists(@"C:\Users\Desktop\dane.bin"))
+                {
+                    Stream openfile_str = File.OpenRead(@"C:\Users\Desktop\dane.bin");
+                    BinaryFormatter deserial = new BinaryFormatter();
+                    baza = (ArrayList)deserial.Deserialize(openfile_str);
+                    openfile_str.Close();
+                }
+
+                if (File.Exists(@"C:\Users\Desktop\dane1.bin"))
+                {
+                    Stream openfile_str = File.OpenRead(@"C:\Users\Desktop\dane1.bin");
+                    BinaryFormatter deserial = new BinaryFormatter();
+                    baza1 = (ArrayList)deserial.Deserialize(openfile_str);
+                    openfile_str.Close();
+                }
+
+                if (File.Exists(@"C:\Users\Desktop\dane2.bin"))
+                {
+                    Stream openfile_str = File.OpenRead(@"C:\Users\Desktop\dane2.bin");
+                    BinaryFormatter deserial = new BinaryFormatter();
+                    baza2 = (ArrayList)deserial.Deserialize(openfile_str);
+                    openfile_str.Close();
+                }
+            }
+
+            catch(SerializationException e)
+            {
+                Console.Clear();
+                Console.WriteLine("UWAGA: Baza danych jest pusta");
+                Console.ReadKey();
+            }
+
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("AUTA:");
+                Console.WriteLine("a.SUW");
+                Console.WriteLine("b.KOMBI");
+                Console.WriteLine("c.SEDAN");
+                Console.WriteLine("d.PODSUMOWANIE");
+                Console.WriteLine("e.KONIEC");
+
+                wybor = Console.ReadLine();
+
+                switch (wybor)
+                {
+                    case "a":
+                        Console.Clear();
+                        Console.WriteLine("-----------------SUWY---------------------");
+                        Console.WriteLine("a.DODAJ SUWA");
+                        Console.WriteLine("b.WYDRUKUJ BAZE SUWOW");
+                        Console.WriteLine("c.USUN SUWA PODAJ NUMER");
+                        zmienna = Console.ReadLine();
+                        switch (zmienna)
+                        {
+                            case "a":
+                                Console.Clear();
+                                suw nowy = new suw();
+                                Console.WriteLine("Podaj nazwe SUWA:");
+                                nowy.suw_nazwa = Console.ReadLine();
+
+
+                                try
+                                {
+                                    Console.WriteLine("Podaj rocznik SUWA:");
+                                    nowy.parametr_rocznik = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj przebieg SUWA:");
+                                    nowy.parametr_przebieg = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj moc SUWA:");
+                                    nowy.parametr_moc = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj cene SUWA:");
+                                    nowy.parametr_cena = Convert.ToInt32(Console.ReadLine());
+
+                                }
+
+                                catch (FormatException e)
+                                {
+
+                                    Console.Clear();
+                                    Console.WriteLine("Nieprawidłowa wartosc:{0},{1}", e.Message, e.Data);
+                                    Console.ReadKey();
+                                    break;
+                                }
+                                baza.Add(nowy);
+                                break;
+
+                            case "b":
+                                Console.Clear();
+                                Console.WriteLine("SUWY:");
+                                foreach (suw a in baza)
+                                {
+                                    Console.WriteLine("-----------------------------------------------");
+                                    Console.WriteLine("NAZWA SUWA:{0}", a.suw_nazwa);
+                                    Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                    Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                    Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                    Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                }
+                                Console.ReadKey();
+                                break;
+                            case "c":
+                                Console.WriteLine("USUWAM SUWA Z BAZY:");
+                                Console.WriteLine("---------------------------------------------------");
+                                zmienna1 = Convert.ToInt32(Console.ReadLine());
+                                if (baza.Count != 0)
+                                    baza.RemoveAt(zmienna1);
+                                break;
+                        }
+                        FileStream fs = new FileStream(@"C:\Users\Desktop\dane.bin", FileMode.Create);
+                        BinaryFormatter formatter = new BinaryFormatter();
+
+                        try
+                        {
+                            formatter.Serialize(fs, baza);
+                        }
+                        catch (SerializationException e)
+                        {
+                            Console.WriteLine("Failed to serial!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:{0}", e.Message);
+                            throw;
+                        }
+
+                        finally
+                        {
+                            fs.Close();
+                        }
+                        break;
+                    case "b":
+                        Console.Clear();
+                        Console.WriteLine("-----------------KOMBIKI---------------------");
+                        Console.WriteLine("a.DODAJ KOMBI");
+                        Console.WriteLine("b.WYDRUKUJ BAZE KOMBIKOW");
+                        Console.WriteLine("c.USUN KOMBIKA PODAJ NUMER");
+                        zmienna = Console.ReadLine();
+                        switch (zmienna)
+                        {
+                            case "a":
+                                Console.Clear();
+
+                                kombi nowy = new kombi();
+                                Console.WriteLine("Podaj nazwe KOMBIKA:");
+                                nowy.kombi_nazwa = Console.ReadLine();
+                                
+
+                                try
+                                {
+                                    Console.WriteLine("Podaj rocznik KOMBIKA:");
+                                    nowy.parametr_rocznik = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj przebieg KOMBIKA:");
+                                    nowy.parametr_przebieg = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj moc KOMBIKA:");
+                                    nowy.parametr_moc = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj cene KOMBIKA:");
+                                    nowy.parametr_cena = Convert.ToInt32(Console.ReadLine());
+
+                                }
+
+                                catch (FormatException e)
+                                {
+
+                                    Console.Clear();
+                                    Console.WriteLine("Nieprawidłowa wartosc:{0},{1}", e.Message, e.Data);
+                                    Console.ReadKey();
+                                    break;
+                                }
+                                baza1.Add(nowy);
+                                break;
+
+                            case "b":
+                                Console.Clear();
+                                Console.WriteLine("KOMBIKI:");
+                                foreach (kombi a in baza1)
+                                {
+                                    Console.WriteLine("-----------------------------------------------");
+                                    Console.WriteLine("NAZWA KOMBIKA:{0}", a.kombi_nazwa);
+                                    Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                    Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                    Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                    Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                }
+                                Console.ReadKey();
+                                break;
+                            case "c":
+                                Console.WriteLine("USUWAM KOMBIKA Z BAZY:");
+                                Console.WriteLine("---------------------------------------------------");
+                                zmienna1 = Convert.ToInt32(Console.ReadLine());
+                                if (baza1.Count != 0)
+                                    baza1.RemoveAt(zmienna1);
+                                break;
+                        }
+                        FileStream fss = new FileStream(@"C:\Users\Desktop\dane1.bin", FileMode.Create);
+                        BinaryFormatter formatterr = new BinaryFormatter();
+
+                        try
+                        {
+                            formatterr.Serialize(fss, baza1);
+                        }
+                        catch (SerializationException e)
+                        {
+                            Console.WriteLine("Failed to serial!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:{0}", e.Message);
+                            throw;
+                        }
+
+                        finally
+                        {
+                            fss.Close();
+                        }
+                        break;
+                    case "c":
+                        Console.Clear();
+                        Console.WriteLine("-----------------SEDANY---------------------");
+                        Console.WriteLine("a.DODAJ SEDANA");
+                        Console.WriteLine("b.WYDRUKUJ BAZE SEDANOW");
+                        Console.WriteLine("c.USUN SEDANA PODAJ NUMER");
+                        zmienna = Console.ReadLine();
+                        switch (zmienna)
+                        {
+                            case "a":
+                                Console.Clear();
+                                sedan nowy = new sedan();
+                                Console.WriteLine("Podaj nazwe SEDANA:");
+                                nowy.sedan_nazwa = Console.ReadLine();
+
+
+                                try
+                                {
+                                    Console.WriteLine("Podaj rocznik SEDANA:");
+                                    nowy.parametr_rocznik = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj przebieg SEDANA:");
+                                    nowy.parametr_przebieg = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj moc SEDANA:");
+                                    nowy.parametr_moc = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Podaj cene SEDANA:");
+                                    nowy.parametr_cena = Convert.ToInt32(Console.ReadLine());
+
+                                }
+
+                                catch (FormatException e)
+                                {
+
+                                    Console.Clear();
+                                    Console.WriteLine("Nieprawidłowa wartosc:{0},{1}", e.Message, e.Data);
+                                    Console.ReadKey();
+                                    break;
+                                }
+                                baza2.Add(nowy);
+                                break;
+
+                            case "b":
+                                Console.Clear();
+                                Console.WriteLine("SEDANY:");
+                                foreach (sedan a in baza2)
+                                {
+                                    Console.WriteLine("-----------------------------------------------");
+                                    Console.WriteLine("NAZWA SEDANA:{0}", a.sedan_nazwa);
+                                    Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                    Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                    Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                    Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                }
+                                Console.ReadKey();
+                                break;
+                            case "c":
+                                Console.WriteLine("USUWAM SEDANA Z BAZY:");
+                                Console.WriteLine("---------------------------------------------------");
+                                zmienna1 = Convert.ToInt32(Console.ReadLine());
+                                if (baza2.Count != 0)
+                                    baza2.RemoveAt(zmienna1);
+                                break;
+                        }
+                        FileStream fsss = new FileStream(@"C:\Users\Desktop\dane2.bin", FileMode.Create);
+                        BinaryFormatter formatterrr = new BinaryFormatter();
+
+                        try
+                        {
+                            formatterrr.Serialize(fsss, baza2);
+                        }
+                        catch (SerializationException e)
+                        {
+                            Console.WriteLine("Failed to serial!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:{0}", e.Message);
+                            throw;
+                        }
+
+                        finally
+                        {
+                            fsss.Close();
+                        }
+                        break;
+                    case "d":
+                   
+                        Console.WriteLine("-------------------PODSUMOWANIE-------------------------------");
+                        
+                        
+                            Console.WriteLine("-------------------SUWY----------------------------");
+                        if (baza.Count != 0)
+                        {
+                            foreach (suw a in baza)
+                            {
+
+                                Console.WriteLine("NAZWA SUW:{0}", a.suw_nazwa);
+                                Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                Console.WriteLine("");
+                            }
+                        }
+                            Console.WriteLine("-------------------KOMBIKI----------------------------");
+                        if (baza1.Count != 0)
+                        {
+                            foreach (kombi a in baza1)
+                            {
+
+                                Console.WriteLine("NAZWA KOMBIKA:{0}", a.kombi_nazwa);
+                                Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                Console.WriteLine("");
+                            }
+                        }
+                        Console.WriteLine("--------------------SEDANY---------------------------");
+                        if (baza2.Count != 0)
+                        {
+                            foreach (sedan a in baza2)
+                            {
+
+                                Console.WriteLine("NAZWA SEDANA:{0}", a.sedan_nazwa);
+                                Console.WriteLine("ROCZNIK:{0}", a.parametr_rocznik);
+                                Console.WriteLine("PRZEBIEG:{0}", a.parametr_przebieg);
+                                Console.WriteLine("MOC:{0}", a.parametr_moc);
+                                Console.WriteLine("CENA:{0}", a.parametr_cena);
+                                Console.WriteLine("");
+                            }
+                        }
+
+
+                        Console.ReadKey();
+                        break;
+                    case "e":
+                        koniec = 'e';
+                        break;
+                    default:
+                        break;
+
+                }
+            } while (koniec != 'e');
+
+
+            return 0;
+        }
+    }
+}
